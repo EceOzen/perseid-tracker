@@ -5,8 +5,6 @@ A small field tool for the 2026 Perseid meteor shower: enter your location and g
 **Live tool:** `https://<username>.github.io/perseid-radiant-2026/`
 *(replace with your actual GitHub Pages URL once Pages is enabled)*
 
-![screenshot placeholder](docs/screenshot.png)
-
 ## What it does
 
 - Enter a city/town (with autocomplete) or use your device's GPS
