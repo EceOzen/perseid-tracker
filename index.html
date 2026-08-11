@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="tr" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title id="pageTitle">Perseid Radyant İzleyici</title>
+<meta name="description" id="pageDesc" content="Konumunu gir, Perseid meteor yağmurunun en iyi izleme penceresini ve bakman gereken yönü gör.">
+
+<meta property="og:title" id="ogTitle" content="Perseid Radyant İzleyici">
+<meta property="og:description" id="ogDesc" content="Konumunu gir, Perseid meteor yağmurunun en iyi izleme penceresini gör.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230B1120'/%3E%3Ccircle cx='50' cy='50' r='8' fill='%23C4527A'/%3E%3Cline x1='20' y1='80' x2='45' y2='55' stroke='%23E8A54B' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1120;
+    --panel:#1B2740;
+    --panel-2:#141d33;
+    --amber:#E8A54B;
+    --star:#F4EFE6;
+    --dim:#8B96B8;
+    --peak:#C4527A;
+    --line:#2A3554;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(232,165,75,0.06), transparent 55%),
+      radial-gradient(ellipse at 100% 10%, rgba(196,82,122,0.05), transparent 50%),
+      var(--bg);
+    color:var(--star);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding:24px 16px calc(64px + env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:520px;margin:0 auto;}
+
+  header{margin-bottom:18px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .header-text{flex:1;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:8px;
+  }
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:26px;
+    line-height:1.15;
+    margin:0 0 8px;
+    letter-spacing:-0.01em;
+  }
+  .sub{color:var(--dim);font-size:13.5px;line-height:1.5;margin:0;}
+
+  .lang-switch{
+    display:flex;
+    gap:4px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:3px;
+    flex-shrink:0;
+  }
+  .lang-btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    font-weight:600;
+    padding:7px 9px;
+    border-radius:7px;
+    border:none;
+    background:transparent;
+    color:var(--dim);
+    cursor:pointer;
+    min-width:32px;
+  }
+  .lang-btn.active{background:var(--amber);color:#241505;}
+
+  .card{
+    background:linear-gradient(180deg, var(--panel), var(--panel-2));
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:20px;
+    margin-bottom:16px;
+  }
+
+  .dial-card{text-align:center;padding:24px 16px 18px;}
+  #dial{width:100%;max-width:340px;height:auto;margin:0 auto;display:block;}
+  .dial-caption{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--dim);
+    margin-top:10px;
+  }
+  .dial-caption b{color:var(--amber);font-weight:600;}
+  .dial-legend{
+    display:flex;
+    justify-content:center;
+    gap:16px;
+    margin-top:12px;
+    flex-wrap:wrap;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    color:var(--dim);
+  }
+  .dial-legend span{display:inline-flex;align-items:center;gap:5px;}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;}
+  .dot-peak{background:#F2C14E;box-shadow:0 0 0 1.5px rgba(242,193,78,0.4);}
+  .dot-path{background:var(--amber);opacity:0.7;}
+  .dot-phone{background:var(--star);opacity:0.8;}
+
+  .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;}
+  .stat .label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--dim);
+    margin-bottom:6px;
+  }
+  .stat .value{font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:600;color:var(--star);}
+  .stat .value.accent{color:var(--amber);}
+  .stat .value.peak{color:var(--peak);}
+  .stat .unit{font-size:13px;color:var(--dim);font-weight:400;margin-left:2px;}
+
+  .score-card{padding-bottom:16px;}
+  .score-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+  .score-head .label{font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--dim);}
+  .score-head .num{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--amber);}
+  .track{height:8px;border-radius:4px;background:var(--panel-2);overflow:hidden;border:1px solid var(--line);}
+  .fill{height:100%;background:linear-gradient(90deg, var(--peak), var(--amber));border-radius:4px;transition:width .6s ease;}
+  .breakdown{display:flex;justify-content:space-between;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);}
+  .breakdown span b{color:var(--star);font-weight:500;}
+
+  .controls{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+  label{
+    display:block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--dim);
+    margin-bottom:6px;
+  }
+  input[type=text], input[type=date]{
+    width:100%;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px;
+    color:var(--star);
+    font-family:'JetBrains Mono',monospace;
+    font-size:15px;
+  }
+  input:focus{outline:2px solid var(--amber);outline-offset:1px;}
+
+  .autocomplete-wrap{position:relative;}
+  .autocomplete-list{
+    position:absolute;
+    top:calc(100% + 4px);
+    left:0;right:0;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    z-index:20;
+    max-height:220px;
+    overflow-y:auto;
+    display:none;
+  }
+  .autocomplete-item{
+    padding:11px 12px;
+    font-size:13.5px;
+    font-family:'Inter',sans-serif;
+    cursor:pointer;
+    border-bottom:1px solid var(--line);
+  }
+  .autocomplete-item:last-child{border-bottom:none;}
+  .autocomplete-item:hover, .autocomplete-item.sel{background:var(--panel);}
+  .autocomplete-item small{display:block;color:var(--dim);font-size:11px;margin-top:2px;}
+
+  button{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    padding:13px 16px;
+    cursor:pointer;
+    transition:transform .15s ease, background .15s ease;
+    min-height:46px;
+  }
+  button:active{transform:scale(0.98);}
+  .btn-primary{background:var(--amber);color:#241505;border:none;}
+  .btn-primary:hover{background:#f0b566;}
+  .btn-ghost{background:transparent;color:var(--star);}
+  .btn-ghost:hover{background:var(--panel-2);}
+  .btn-row{display:flex;gap:10px;}
+  .btn-row button{flex:1;}
+  .btn-share{width:100%;}
+
+  #status{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--dim);
+    min-height:32px;
+    margin-top:2px;
+    line-height:1.5;
+  }
+  #status.err{color:var(--peak);}
+  #status.ok{color:var(--amber);}
+
+  footer{
+    text-align:center;
+    color:var(--dim);
+    font-size:11.5px;
+    font-family:'JetBrains Mono',monospace;
+    margin-top:24px;
+    line-height:1.6;
+  }
+  footer a{color:var(--amber);text-decoration:none;}
+
+  .toast{
+    position:fixed;
+    bottom:calc(20px + env(safe-area-inset-bottom));
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--amber);
+    color:#241505;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    font-weight:600;
+    padding:11px 18px;
+    border-radius:10px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    z-index:50;
+    white-space:nowrap;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    .fill{transition:none;}
+    button{transition:none;}
+    .toast{transition:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="header-text">
+      <div class="eyebrow" data-i18n="eyebrow">Code Beyond the Earth · Alan Aracı</div>
+      <h1 data-i18n="title">Perseid Radyant İzleyici</h1>
+      <p class="sub" data-i18n="subtitle">Konumunu gir, en iyi izleme penceresini ve bakman gereken yönü gör.</p>
+    </div>
+    <div class="lang-switch" id="langSwitch">
+      <button class="lang-btn" data-lang="tr">TR</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="fr">FR</button>
+      <button class="lang-btn" data-lang="de">DE</button>
+    </div>
+  </header>
+
+  <div class="card dial-card">
+    <svg id="dial" viewBox="0 0 300 300"></svg>
+    <div class="dial-caption"><span data-i18n="dialCaptionPre">Merkez = tepe nokta (zenit), kenar = ufuk.</span> <b id="dialNow">—</b></div>
+    <div class="dial-legend">
+      <span><i class="dot dot-peak"></i><span data-i18n="legendPeak">Zirve anı</span></span>
+      <span><i class="dot dot-path"></i><span data-i18n="legendPath">Gece boyu yol</span></span>
+      <span><i class="dot dot-phone"></i><span data-i18n="legendPhone">Telefon yönü</span></span>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat">
+      <div class="label" data-i18n="bestTime">En iyi saat</div>
+      <div class="value peak" id="peakTime">—</div>
+    </div>
+    <div class="stat">
+      <div class="label" data-i18n="direction">Bakılacak yön</div>
+      <div class="value accent" id="direction">—</div>
+    </div>
+    <div class="stat">
+      <div class="label" data-i18n="radiantAlt">Radyant yüksekliği</div>
+      <div class="value" id="altNow">—<span class="unit">°</span></div>
+    </div>
+    <div class="stat">
+      <div class="label" data-i18n="moonState">Ay durumu</div>
+      <div class="value" id="moonState">—</div>
+    </div>
+  </div>
+
+  <div class="card score-card">
+    <div class="score-head">
+      <span class="label" data-i18n="score">Gözlem skoru</span>
+      <span class="num" id="scoreNum">—</span>
+    </div>
+    <div class="track"><div class="fill" id="scoreFill" style="width:0%"></div></div>
+    <div class="breakdown">
+      <span data-i18n="bdAltLabel">Radyant <b id="bdAlt">—</b></span>
+      <span data-i18n="bdCloudLabel">Bulut <b id="bdCloud">—</b></span>
+      <span data-i18n="bdLightLabel">Işık <b id="bdLight">—</b></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="controls">
+      <div class="autocomplete-wrap">
+        <label for="placeInput" data-i18n="locationLabel">Konum (şehir/ilçe)</label>
+        <input type="text" id="placeInput" placeholder="Pendik, İstanbul" autocomplete="off">
+        <div class="autocomplete-list" id="autoList"></div>
+      </div>
+      <div>
+        <label for="dateInput" data-i18n="dateLabel">Gözlem gecesi</label>
+        <input type="date" id="dateInput" value="2026-08-12">
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" id="locBtn" data-i18n="useLocation">📍 Konumumu Kullan</button>
+        <button class="btn-ghost" id="calcBtn" data-i18n="calculate">Hesapla</button>
+      </div>
+      <button class="btn-ghost" id="compassBtn" data-i18n="openCompass">🧭 Pusulayı Aç</button>
+      <button class="btn-ghost btn-share" id="shareBtn" data-i18n="shareLink">🔗 Bağlantıyı Paylaş</button>
+      <div id="status" data-i18n="statusDefault">Balıkesir/Akçay varsayılan koordinatlarla gösteriliyor.</div>
+    </div>
+  </div>
+
+  <footer>
+    <span data-i18n="footer1">Radyant konumu Astropy ile doğrulanmış formüllerle tarayıcıda hesaplanır.</span><br>
+    <span data-i18n="footer2">Bulut verisi</span> <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> · <span data-i18n="footer3">konum arama</span> <a href="https://nominatim.openstreetmap.org" target="_blank" rel="noopener">OpenStreetMap</a>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const STRINGS = {
+    tr: {
+      eyebrow: "Code Beyond the Earth · Alan Aracı",
+      title: "Perseid Radyant İzleyici",
+      subtitle: "Konumunu gir, en iyi izleme penceresini ve bakman gereken yönü gör.",
+      dialCaptionPre: "Merkez = tepe nokta (zenit), kenar = ufuk.",
+      bestTime: "En iyi saat",
+      direction: "Bakılacak yön",
+      radiantAlt: "Zirvedeki yükseklik",
+      moonState: "Ay durumu",
+      score: "Gözlem skoru",
+      bdAltLabel: "Radyant",
+      bdCloudLabel: "Bulut",
+      bdLightLabel: "Işık",
+      locationLabel: "Konum (şehir/ilçe)",
+      dateLabel: "Gözlem gecesi",
+      useLocation: "📍 Konumumu Kullan",
+      calculate: "Hesapla",
+      openCompass: "🧭 Pusulayı Aç",
+      shareLink: "🔗 Bağlantıyı Paylaş",
+      statusDefault: "Balıkesir/Akçay varsayılan koordinatlarla gösteriliyor.",
+      footer1: "Radyant konumu Astropy ile doğrulanmış formüllerle tarayıcıda hesaplanır.",
+      footer2: "Bulut verisi",
+      footer3: "konum arama",
+      searching: "Konum aranıyor…",
+      noResults: "Sonuç bulunamadı, farklı bir isim dene.",
+      geoError: "Konum aranamadı, bağlantını kontrol et.",
+      locFound: "Konum bulundu: {name}",
+      locBusy: "Konum alınıyor…",
+      locDenied: "Konum alınamadı: {msg}",
+      locNoSupport: "Tarayıcın konum servisini desteklemiyor.",
+      compassOn: "Pusula açık — telefonu bakılacak yöne çevir.",
+      compassDenied: "Pusula izni verilmedi.",
+      compassNoAsk: "Pusula izni istenemedi.",
+      cloudMissing: "Bulut tahmini alınamadı (Open-Meteo), sadece astronomik veriyle hesaplandı.",
+      ready: "Hazır. Gece boyu {n} nokta tarandı.",
+      needFields: "Konum ve tarih gerekli.",
+      linkCopied: "Bağlantı kopyalandı",
+      darkOk: "Karanlık ✓",
+      moonPct: "%{p} aydınlık",
+      compassPhone: "Telefon: {h}° ({dir})",
+      turnLeft: "◀ {deg}° sola dön",
+      turnRight: "{deg}° sağa dön ▶",
+      aligned: "Hizalandın ✓",
+      legendPhone: "Telefon yönü",
+      legendPeak: "Zirve anı",
+      legendPath: "Gece boyu yol",
+      dirs: ['K','KKD','KD','DKD','D','DGD','GD','GGD','G','GGB','GB','BGB','B','BKB','KB','KKB']
+    },
+    en: {
+      eyebrow: "Code Beyond the Earth · Field Tool",
+      title: "Perseid Radiant Tracker",
+      subtitle: "Enter your location and see the best viewing window and where to look.",
+      dialCaptionPre: "Center = zenith, edge = horizon.",
+      bestTime: "Best time",
+      direction: "Look toward",
+      radiantAlt: "Altitude at peak",
+      moonState: "Moon",
+      score: "Viewing score",
+      bdAltLabel: "Radiant",
+      bdCloudLabel: "Cloud",
+      bdLightLabel: "Light",
+      locationLabel: "Location (city/town)",
+      dateLabel: "Observing night",
+      useLocation: "📍 Use My Location",
+      calculate: "Calculate",
+      openCompass: "🧭 Open Compass",
+      shareLink: "🔗 Share Link",
+      statusDefault: "Showing default coordinates for Akçay/Balıkesir.",
+      footer1: "Radiant position is computed in your browser using Astropy-verified formulas.",
+      footer2: "Cloud data:",
+      footer3: "location search:",
+      searching: "Searching location…",
+      noResults: "No results, try a different name.",
+      geoError: "Search failed, check your connection.",
+      locFound: "Location found: {name}",
+      locBusy: "Getting location…",
+      locDenied: "Could not get location: {msg}",
+      locNoSupport: "Your browser doesn't support geolocation.",
+      compassOn: "Compass on — turn your phone toward the marker.",
+      compassDenied: "Compass permission denied.",
+      compassNoAsk: "Could not request compass permission.",
+      cloudMissing: "Cloud forecast unavailable (Open-Meteo), computed with astronomy only.",
+      ready: "Ready. Scanned {n} points through the night.",
+      needFields: "Location and date are required.",
+      linkCopied: "Link copied",
+      darkOk: "Dark ✓",
+      moonPct: "{p}% lit",
+      compassPhone: "Phone: {h}° ({dir})",
+      turnLeft: "◀ Turn left {deg}°",
+      turnRight: "Turn right {deg}° ▶",
+      aligned: "Aligned ✓",
+      legendPhone: "Phone heading",
+      legendPeak: "Peak moment",
+      legendPath: "Path through the night",
+      dirs: ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW']
+    },
+    fr: {
+      eyebrow: "Code Beyond the Earth · Outil de terrain",
+      title: "Traceur du radiant des Perséides",
+      subtitle: "Entrez votre position pour voir la meilleure fenêtre d'observation et la direction à regarder.",
+      dialCaptionPre: "Centre = zénith, bord = horizon.",
+      bestTime: "Meilleure heure",
+      direction: "Direction à regarder",
+      radiantAlt: "Hauteur au pic",
+      moonState: "Lune",
+      score: "Score d'observation",
+      bdAltLabel: "Radiant",
+      bdCloudLabel: "Nuages",
+      bdLightLabel: "Lumière",
+      locationLabel: "Lieu (ville)",
+      dateLabel: "Nuit d'observation",
+      useLocation: "📍 Utiliser ma position",
+      calculate: "Calculer",
+      openCompass: "🧭 Ouvrir la boussole",
+      shareLink: "🔗 Partager le lien",
+      statusDefault: "Coordonnées par défaut d'Akçay/Balıkesir affichées.",
+      footer1: "La position du radiant est calculée dans votre navigateur avec des formules vérifiées par Astropy.",
+      footer2: "Données nuageuses :",
+      footer3: "recherche de lieu :",
+      searching: "Recherche du lieu…",
+      noResults: "Aucun résultat, essayez un autre nom.",
+      geoError: "Échec de la recherche, vérifiez votre connexion.",
+      locFound: "Lieu trouvé : {name}",
+      locBusy: "Localisation en cours…",
+      locDenied: "Localisation impossible : {msg}",
+      locNoSupport: "Votre navigateur ne prend pas en charge la géolocalisation.",
+      compassOn: "Boussole activée — tournez votre téléphone vers le repère.",
+      compassDenied: "Permission boussole refusée.",
+      compassNoAsk: "Impossible de demander la permission boussole.",
+      cloudMissing: "Prévision nuageuse indisponible (Open-Meteo), calcul astronomique seul.",
+      ready: "Prêt. {n} points analysés durant la nuit.",
+      needFields: "Lieu et date requis.",
+      linkCopied: "Lien copié",
+      darkOk: "Sombre ✓",
+      moonPct: "{p}% éclairée",
+      compassPhone: "Téléphone : {h}° ({dir})",
+      turnLeft: "◀ Tournez à gauche de {deg}°",
+      turnRight: "Tournez à droite de {deg}° ▶",
+      aligned: "Aligné ✓",
+      legendPhone: "Direction du téléphone",
+      legendPeak: "Moment de pic",
+      legendPath: "Trajet nocturne",
+      dirs: ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO']
+    },
+    de: {
+      eyebrow: "Code Beyond the Earth · Feld-Tool",
+      title: "Perseiden-Radiant-Tracker",
+      subtitle: "Gib deinen Standort ein, um das beste Beobachtungsfenster und die Blickrichtung zu sehen.",
+      dialCaptionPre: "Mitte = Zenit, Rand = Horizont.",
+      bestTime: "Beste Uhrzeit",
+      direction: "Blickrichtung",
+      radiantAlt: "Höhe am Höhepunkt",
+      moonState: "Mond",
+      score: "Beobachtungswert",
+      bdAltLabel: "Radiant",
+      bdCloudLabel: "Wolken",
+      bdLightLabel: "Licht",
+      locationLabel: "Ort (Stadt/Bezirk)",
+      dateLabel: "Beobachtungsnacht",
+      useLocation: "📍 Meinen Standort nutzen",
+      calculate: "Berechnen",
+      openCompass: "🧭 Kompass öffnen",
+      shareLink: "🔗 Link teilen",
+      statusDefault: "Standardkoordinaten für Akçay/Balıkesir werden angezeigt.",
+      footer1: "Die Radiant-Position wird im Browser mit Astropy-verifizierten Formeln berechnet.",
+      footer2: "Wolkendaten:",
+      footer3: "Ortssuche:",
+      searching: "Ort wird gesucht…",
+      noResults: "Keine Ergebnisse, versuch einen anderen Namen.",
+      geoError: "Suche fehlgeschlagen, prüfe deine Verbindung.",
+      locFound: "Ort gefunden: {name}",
+      locBusy: "Standort wird ermittelt…",
+      locDenied: "Standort nicht verfügbar: {msg}",
+      locNoSupport: "Dein Browser unterstützt keine Standortermittlung.",
+      compassOn: "Kompass aktiv — Telefon zur Markierung drehen.",
+      compassDenied: "Kompass-Berechtigung verweigert.",
+      compassNoAsk: "Kompass-Berechtigung konnte nicht angefragt werden.",
+      cloudMissing: "Wolkenvorhersage nicht verfügbar (Open-Meteo), nur astronomisch berechnet.",
+      ready: "Bereit. {n} Punkte über die Nacht gescannt.",
+      needFields: "Ort und Datum erforderlich.",
+      linkCopied: "Link kopiert",
+      darkOk: "Dunkel ✓",
+      moonPct: "{p}% beleuchtet",
+      compassPhone: "Telefon: {h}° ({dir})",
+      turnLeft: "◀ {deg}° nach links drehen",
+      turnRight: "{deg}° nach rechts drehen ▶",
+      aligned: "Ausgerichtet ✓",
+      legendPhone: "Telefonrichtung",
+      legendPeak: "Höhepunkt",
+      legendPath: "Weg durch die Nacht",
+      dirs: ['N','NNO','NO','ONO','O','OSO','SO','SSO','S','SSW','SW','WSW','W','WNW','NW','NNW']
+    }
+  };
+
+  let currentLang = 'tr';
+
+  function t(key, params){
+    let str = (STRINGS[currentLang] && STRINGS[currentLang][key]) || STRINGS.tr[key] || key;
+    if (params){
+      Object.keys(params).forEach(k=>{ str = str.replace('{'+k+'}', params[k]); });
+    }
+    return str;
+  }
+
+  function applyLangToDOM(){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      el.textContent = t(key);
+    });
+    document.getElementById('htmlRoot').setAttribute('lang', currentLang);
+    document.getElementById('pageTitle').textContent = t('title');
+    document.getElementById('pageDesc').setAttribute('content', t('subtitle'));
+    document.getElementById('ogTitle').setAttribute('content', t('title'));
+    document.getElementById('ogDesc').setAttribute('content', t('subtitle'));
+    document.querySelectorAll('.lang-btn').forEach(b=>{
+      b.classList.toggle('active', b.getAttribute('data-lang')===currentLang);
+    });
+  }
+
+  function setLang(lang){
+    if (!STRINGS[lang]) return;
+    currentLang = lang;
+    applyLangToDOM();
+    const url = new URL(window.location);
+    url.searchParams.set('lang', lang);
+    window.history.replaceState({}, '', url);
+    if (!hasComputed){ setStatus(t('statusDefault')); }
+    compute();
+  }
+
+  document.getElementById('langSwitch').addEventListener('click', (e)=>{
+    const btn = e.target.closest('.lang-btn');
+    if (btn) setLang(btn.getAttribute('data-lang'));
+  });
+
+  const DEG = Math.PI/180, RAD = 180/Math.PI;
+  const RADIANT_RA_DEG = 48.2;
+  const RADIANT_DEC_DEG = 58.1;
+  const LIGHT_POLLUTION_DEFAULT = 0.25;
+  const DEFAULT_LAT = 39.5822, DEFAULT_LON = 26.9186, DEFAULT_NAME = "Akçay / Balıkesir";
+  const DIAL_CX = 150, DIAL_CY = 150, DIAL_R = 130;
+
+  function polarToXY(alt, az){
+    const rr = DIAL_R * (1 - Math.max(0,alt)/90);
+    const rad = (az-90)*DEG;
+    return [DIAL_CX + rr*Math.cos(rad), DIAL_CY + rr*Math.sin(rad)];
+  }
+
+  let hasComputed = false;
+  let selectedLat = DEFAULT_LAT, selectedLon = DEFAULT_LON, selectedName = DEFAULT_NAME;
+  let currentBestAz = null;
+
+  const els = {
+    place: document.getElementById('placeInput'),
+    autoList: document.getElementById('autoList'),
+    date: document.getElementById('dateInput'),
+    locBtn: document.getElementById('locBtn'),
+    calcBtn: document.getElementById('calcBtn'),
+    compassBtn: document.getElementById('compassBtn'),
+    shareBtn: document.getElementById('shareBtn'),
+    status: document.getElementById('status'),
+    peakTime: document.getElementById('peakTime'),
+    direction: document.getElementById('direction'),
+    altNow: document.getElementById('altNow'),
+    moonState: document.getElementById('moonState'),
+    scoreNum: document.getElementById('scoreNum'),
+    scoreFill: document.getElementById('scoreFill'),
+    bdAlt: document.getElementById('bdAlt'),
+    bdCloud: document.getElementById('bdCloud'),
+    bdLight: document.getElementById('bdLight'),
+    dial: document.getElementById('dial'),
+    dialNow: document.getElementById('dialNow'),
+    toast: document.getElementById('toast'),
+  };
+
+  function setStatus(msg, kind){
+    els.status.textContent = msg;
+    els.status.className = kind || '';
+  }
+
+  function showToast(msg){
+    els.toast.textContent = msg;
+    els.toast.classList.add('show');
+    setTimeout(()=> els.toast.classList.remove('show'), 2200);
+  }
+
+  function julianDate(date){ return date.getTime()/86400000 + 2440587.5; }
+
+  function gmstDeg(jd){
+    const T = (jd - 2451545.0)/36525.0;
+    let gmst = 280.46061837 + 360.98564736629*(jd - 2451545.0)
+             + 0.000387933*T*T - (T*T*T)/38710000.0;
+    gmst = gmst % 360;
+    if (gmst < 0) gmst += 360;
+    return gmst;
+  }
+
+  function lstDeg(jd, lonDeg){
+    let lst = gmstDeg(jd) + lonDeg;
+    lst = lst % 360;
+    if (lst < 0) lst += 360;
+    return lst;
+  }
+
+  function raDecToAltAz(raDeg, decDeg, latDeg, lonDeg, date){
+    const jd = julianDate(date);
+    const lst = lstDeg(jd, lonDeg);
+    let ha = (lst - raDeg) * DEG;
+    const dec = decDeg * DEG;
+    const lat = latDeg * DEG;
+
+    const sinAlt = Math.sin(dec)*Math.sin(lat) + Math.cos(dec)*Math.cos(lat)*Math.cos(ha);
+    const alt = Math.asin(Math.min(1, Math.max(-1, sinAlt)));
+
+    const cosAz = (Math.sin(dec) - Math.sin(alt)*Math.sin(lat)) / (Math.cos(alt)*Math.cos(lat));
+    let az = Math.acos(Math.min(1, Math.max(-1, cosAz)));
+    if (Math.sin(ha) > 0) az = 2*Math.PI - az;
+
+    return { alt: alt*RAD, az: az*RAD };
+  }
+
+  function sunEquatorial(date){
+    const jd = julianDate(date);
+    const n = jd - 2451545.0;
+    let L = (280.460 + 0.9856474*n) % 360;
+    let g = (357.528 + 0.9856003*n) % 360;
+    if (L<0) L+=360; if (g<0) g+=360;
+    const lambda = (L + 1.915*Math.sin(g*DEG) + 0.020*Math.sin(2*g*DEG)) * DEG;
+    const eps = 23.439 * DEG;
+    const ra = Math.atan2(Math.cos(eps)*Math.sin(lambda), Math.cos(lambda)) * RAD;
+    const dec = Math.asin(Math.sin(eps)*Math.sin(lambda)) * RAD;
+    return { ra: (ra+360)%360, dec };
+  }
+
+  function moonPhaseFraction(date){
+    const known = Date.UTC(2000,0,6,18,14);
+    const synodic = 29.53058867;
+    const days = (date.getTime() - known)/86400000;
+    let phase = (days % synodic)/synodic;
+    if (phase < 0) phase += 1;
+    const illum = (1 - Math.cos(2*Math.PI*phase))/2;
+    return { phase, illum };
+  }
+
+  function azToCompass(az){
+    const dirs = t('dirs');
+    const idx = Math.round(az/22.5) % 16;
+    return dirs[idx];
+  }
+
+  function scanNight(latDeg, lonDeg, nightStart){
+    const points = [];
+    const start = new Date(nightStart.getTime());
+    for (let m = 0; m <= 14*60; m += 10){
+      const time = new Date(start.getTime() + m*60000);
+      const radiantAA = raDecToAltAz(RADIANT_RA_DEG, RADIANT_DEC_DEG, latDeg, lonDeg, time);
+      const sunEq = sunEquatorial(time);
+      const sunAA = raDecToAltAz(sunEq.ra, sunEq.dec, latDeg, lonDeg, time);
+      points.push({ t: time, alt: radiantAA.alt, az: radiantAA.az, sunAlt: sunAA.alt });
+    }
+    return points;
+  }
+
+  function findBestWindow(points){
+    let best = null;
+    for (const p of points){
+      if (p.sunAlt < -18 && p.alt > 0){
+        if (!best || p.alt > best.alt) best = p;
+      }
+    }
+    if (!best){
+      for (const p of points){ if (!best || p.alt > best.alt) best = p; }
+    }
+    return best;
+  }
+
+  async function fetchCloudCover(lat, lon, isoDate){
+    try{
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=cloudcover&timezone=UTC&start_date=${isoDate}&end_date=${isoDate}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('open-meteo failed');
+      return await res.json();
+    }catch(e){ return null; }
+  }
+
+  function cloudAtHour(cloudData, targetDate){
+    if (!cloudData || !cloudData.hourly) return null;
+    const times = cloudData.hourly.time;
+    const clouds = cloudData.hourly.cloudcover;
+    const targetIso = targetDate.toISOString().slice(0,13);
+    for (let i=0;i<times.length;i++){
+      if (times[i].slice(0,13) === targetIso) return clouds[i];
+    }
+    return null;
+  }
+
+  let geocodeTimer = null;
+  let geocodeCache = {};
+  let activeAutoItems = [];
+  let autoSelIdx = -1;
+
+  els.place.addEventListener('input', ()=>{
+    const q = els.place.value.trim();
+    clearTimeout(geocodeTimer);
+    if (q.length < 2){ hideAutoList(); return; }
+    geocodeTimer = setTimeout(()=> doGeocode(q), 450);
+  });
+
+  els.place.addEventListener('keydown', (e)=>{
+    if (!activeAutoItems.length) return;
+    if (e.key === 'ArrowDown'){ e.preventDefault(); autoSelIdx = Math.min(autoSelIdx+1, activeAutoItems.length-1); renderAutoHighlight(); }
+    else if (e.key === 'ArrowUp'){ e.preventDefault(); autoSelIdx = Math.max(autoSelIdx-1, 0); renderAutoHighlight(); }
+    else if (e.key === 'Enter'){ if (autoSelIdx>=0){ e.preventDefault(); pickPlace(activeAutoItems[autoSelIdx]); } }
+    else if (e.key === 'Escape'){ hideAutoList(); }
+  });
+
+  document.addEventListener('click', (e)=>{
+    if (!e.target.closest('.autocomplete-wrap')) hideAutoList();
+  });
+
+  async function doGeocode(query){
+    if (geocodeCache[query]){
+      renderAutoList(geocodeCache[query]);
+      return;
+    }
+    try{
+      setStatus(t('searching'));
+      const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=6&accept-language=${currentLang}&q=${encodeURIComponent(query)}`;
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (!res.ok) throw new Error('geocode failed');
+      const data = await res.json();
+      geocodeCache[query] = data;
+      renderAutoList(data);
+      if (!data.length) setStatus(t('noResults'), 'err');
+      else setStatus(t('statusDefault'));
+    }catch(e){
+      setStatus(t('geoError'), 'err');
+    }
+  }
+
+  function renderAutoList(items){
+    activeAutoItems = items;
+    autoSelIdx = -1;
+    if (!items.length){ hideAutoList(); return; }
+    els.autoList.innerHTML = items.map((it, i)=>{
+      const main = it.display_name.split(',')[0];
+      const rest = it.display_name.split(',').slice(1,3).join(',').trim();
+      return `<div class="autocomplete-item" data-idx="${i}"><span>${main}</span><small>${rest}</small></div>`;
+    }).join('');
+    els.autoList.style.display = 'block';
+    els.autoList.querySelectorAll('.autocomplete-item').forEach(el=>{
+      el.addEventListener('click', ()=> pickPlace(items[parseInt(el.getAttribute('data-idx'))]));
+    });
+  }
+
+  function renderAutoHighlight(){
+    els.autoList.querySelectorAll('.autocomplete-item').forEach((el,i)=>{
+      el.classList.toggle('sel', i===autoSelIdx);
+    });
+  }
+
+  function hideAutoList(){
+    els.autoList.style.display = 'none';
+    activeAutoItems = [];
+    autoSelIdx = -1;
+  }
+
+  function pickPlace(item){
+    selectedLat = parseFloat(item.lat);
+    selectedLon = parseFloat(item.lon);
+    selectedName = item.display_name.split(',').slice(0,2).join(',');
+    els.place.value = selectedName;
+    hideAutoList();
+    setStatus(t('locFound', {name: selectedName}));
+    compute();
+  }
+
+  function drawDial(points, bestPoint){
+    const svg = els.dial;
+    const cx=DIAL_CX, cy=DIAL_CY, R=DIAL_R;
+    let html = '';
+
+    html += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="#141d33" stroke="#2A3554" stroke-width="1.5"/>`;
+    const ringAlts = [60, 30, 0];
+    ringAlts.forEach((altVal, i)=>{
+      const r = R * (1 - altVal/90);
+      html += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#2A3554" stroke-width="1" stroke-dasharray="2,4"/>`;
+      if (altVal > 0){
+        const labelRad = (45-90)*DEG;
+        const lx = cx + r*Math.cos(labelRad);
+        const ly = cy + r*Math.sin(labelRad);
+        html += `<text x="${lx}" y="${ly-4}" fill="#5B6787" font-family="JetBrains Mono, monospace" font-size="9.5" text-anchor="middle">${altVal}°</text>`;
+      }
+    });
+
+    const dirs = t('dirs');
+    const compassPoints = [[dirs[0],0],[dirs[4],90],[dirs[8],180],[dirs[12],270]];
+    compassPoints.forEach(([label, az])=>{
+      const rad = (az-90)*DEG;
+      const x = cx + (R+16)*Math.cos(rad);
+      const y = cy + (R+16)*Math.sin(rad);
+      html += `<text x="${x}" y="${y}" fill="#8B96B8" font-family="JetBrains Mono, monospace" font-size="12" text-anchor="middle" dominant-baseline="middle">${label}</text>`;
+    });
+
+    const darkPts = points.filter(p=>p.sunAlt < -18 && p.alt > -5);
+    if (darkPts.length > 1){
+      let d = '';
+      darkPts.forEach((p,i)=>{
+        const [x,y] = polarToXY(p.alt, p.az);
+        d += (i===0?'M':'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+      });
+      html += `<path d="${d}" fill="none" stroke="#E8A54B" stroke-width="2.5" opacity="0.6"/>`;
+    }
+
+    if (bestPoint && bestPoint.alt > -5){
+      const [x,y] = polarToXY(bestPoint.alt, bestPoint.az);
+      const s = 9, s2 = 3.5;
+      const star = [
+        [x, y-s], [x+s2, y-s2], [x+s, y], [x+s2, y+s2],
+        [x, y+s], [x-s2, y+s2], [x-s, y], [x-s2, y-s2]
+      ].map(p=>p.join(',')).join(' ');
+      html += `<polygon points="${star}" fill="#F2C14E" stroke="#0B1120" stroke-width="1"/>`;
+    }
+
+    html += `<circle cx="${cx}" cy="${cy}" r="2.5" fill="#8B96B8"/>`;
+    html += `<g id="liveHeadingGroup"></g>`;
+    svg.innerHTML = html;
+  }
+
+  // live phone-heading indicator: a line from center to the horizon edge
+  // at the phone's current compass heading, drawn/updated without a full
+  // dial redraw so it stays smooth as the phone rotates.
+  function updateLiveHeadingMarker(headingDeg){
+    const group = document.getElementById('liveHeadingGroup');
+    if (!group) return;
+    const [ex, ey] = polarToXY(0, headingDeg);
+    group.innerHTML = `
+      <line x1="${DIAL_CX}" y1="${DIAL_CY}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}"
+            stroke="#F4EFE6" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.55"/>
+      <circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="6" fill="#F4EFE6" stroke="#0B1120" stroke-width="1.5"/>
+    `;
+  }
+
+  let compassEnabled = false;
+
+  async function compute(){
+    const dateStr = els.date.value;
+    if (isNaN(selectedLat) || isNaN(selectedLon) || !dateStr){
+      setStatus(t('needFields'), 'err');
+      return;
+    }
+
+    const nightStart = new Date(dateStr + 'T18:00:00Z');
+    const points = scanNight(selectedLat, selectedLon, nightStart);
+    const best = findBestWindow(points);
+
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const localeMap = { tr:'tr-TR', en:'en-US', fr:'fr-FR', de:'de-DE' };
+    const peakLocal = best.t.toLocaleTimeString(localeMap[currentLang]||'en-US', {hour:'2-digit', minute:'2-digit', timeZone: tz});
+
+    els.peakTime.textContent = peakLocal;
+    els.direction.textContent = `${azToCompass(best.az)} ${Math.round(best.az)}°`;
+    els.altNow.innerHTML = `${Math.round(best.alt)}<span class="unit">°</span>`;
+
+    const moon = moonPhaseFraction(best.t);
+    const moonPct = Math.round(moon.illum*100);
+    els.moonState.textContent = moonPct < 15 ? t('darkOk') : t('moonPct', {p: moonPct});
+
+    const cloudData = await fetchCloudCover(selectedLat, selectedLon, dateStr);
+    let cloudPct = cloudAtHour(cloudData, best.t);
+
+    const altScore = Math.max(0, Math.min(1, best.alt/60));
+    const cloudScore = cloudPct===null ? 0.5 : (1 - cloudPct/100);
+    const lightScore = 1 - LIGHT_POLLUTION_DEFAULT;
+    const moonScore = 1 - moon.illum;
+
+    const finalScore = Math.round(
+      (altScore*0.4 + cloudScore*0.35 + lightScore*0.15 + moonScore*0.10) * 100
+    );
+
+    els.scoreNum.textContent = finalScore;
+    els.scoreFill.style.width = finalScore + '%';
+    els.bdAlt.textContent = Math.round(best.alt)+'°';
+    els.bdCloud.textContent = cloudPct===null ? '—' : cloudPct+'%';
+    els.bdLight.textContent = Math.round((1-LIGHT_POLLUTION_DEFAULT)*100)+'/100';
+
+    drawDial(points, best);
+    els.dialNow.textContent = `${Math.round(best.alt)}° / ${azToCompass(best.az)}`;
+    currentBestAz = best.az;
+
+    hasComputed = true;
+
+    if (cloudPct===null){
+      setStatus(t('cloudMissing'));
+    } else {
+      setStatus(t('ready', {n: points.length}));
+    }
+
+    const url = new URL(window.location);
+    url.searchParams.set('lat', selectedLat.toFixed(4));
+    url.searchParams.set('lon', selectedLon.toFixed(4));
+    url.searchParams.set('name', selectedName);
+    url.searchParams.set('date', dateStr);
+    url.searchParams.set('lang', currentLang);
+    window.history.replaceState({}, '', url);
+  }
+
+  els.locBtn.addEventListener('click', ()=>{
+    if (!navigator.geolocation){
+      setStatus(t('locNoSupport'), 'err');
+      return;
+    }
+    setStatus(t('locBusy'));
+    navigator.geolocation.getCurrentPosition(
+      async (pos)=>{
+        selectedLat = pos.coords.latitude;
+        selectedLon = pos.coords.longitude;
+        selectedName = `${selectedLat.toFixed(3)}, ${selectedLon.toFixed(3)}`;
+        try{
+          const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${selectedLat}&lon=${selectedLon}&accept-language=${currentLang}`;
+          const res = await fetch(url);
+          if (res.ok){
+            const data = await res.json();
+            if (data && data.address){
+              const a = data.address;
+              selectedName = a.town || a.city || a.county || a.state || selectedName;
+              els.place.value = selectedName;
+            }
+          }
+        }catch(e){ /* keep coordinate fallback */ }
+        setStatus(t('locFound', {name: selectedName}));
+        compute();
+      },
+      (err)=>{ setStatus(t('locDenied', {msg: err.message}), 'err'); },
+      { enableHighAccuracy:true, timeout:8000 }
+    );
+  });
+
+  els.calcBtn.addEventListener('click', compute);
+
+  els.compassBtn.addEventListener('click', async ()=>{
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function'){
+      try{
+        const perm = await DeviceOrientationEvent.requestPermission();
+        if (perm !== 'granted'){ setStatus(t('compassDenied'), 'err'); return; }
+      }catch(e){ setStatus(t('compassNoAsk'), 'err'); return; }
+    }
+    compassEnabled = true;
+    window.addEventListener('deviceorientationabsolute', onOrientation, true);
+    window.addEventListener('deviceorientation', onOrientation, true);
+    setStatus(t('compassOn'));
+  });
+
+  function onOrientation(e){
+    if (!compassEnabled) return;
+    let heading = null;
+    if (typeof e.webkitCompassHeading === 'number'){ heading = e.webkitCompassHeading; }
+    else if (typeof e.alpha === 'number'){ heading = 360 - e.alpha; }
+    if (heading === null) return;
+
+    updateLiveHeadingMarker(heading);
+
+    if (currentBestAz !== null){
+      let diff = currentBestAz - heading;
+      diff = ((diff + 540) % 360) - 180; // normalize to -180..180
+      if (Math.abs(diff) < 5){
+        els.dialNow.textContent = t('aligned');
+      } else if (diff > 0){
+        els.dialNow.textContent = t('turnRight', {deg: Math.round(diff)});
+      } else {
+        els.dialNow.textContent = t('turnLeft', {deg: Math.round(-diff)});
+      }
+    } else {
+      els.dialNow.textContent = t('compassPhone', {h: Math.round(heading), dir: azToCompass(heading)});
+    }
+  }
+
+  els.shareBtn.addEventListener('click', async ()=>{
+    const url = window.location.href;
+    try{
+      if (navigator.share){
+        await navigator.share({ title: t('title'), url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        showToast(t('linkCopied'));
+      }
+    }catch(e){
+      try{
+        await navigator.clipboard.writeText(url);
+        showToast(t('linkCopied'));
+      }catch(e2){ /* silent */ }
+    }
+  });
+
+  function initFromURL(){
+    const params = new URLSearchParams(window.location.search);
+    const urlLang = params.get('lang');
+    if (urlLang && STRINGS[urlLang]) currentLang = urlLang;
+    else {
+      const browserLang = (navigator.language||'tr').slice(0,2);
+      if (STRINGS[browserLang]) currentLang = browserLang;
+    }
+
+    const lat = parseFloat(params.get('lat'));
+    const lon = parseFloat(params.get('lon'));
+    const name = params.get('name');
+    const date = params.get('date');
+
+    if (!isNaN(lat) && !isNaN(lon)){
+      selectedLat = lat; selectedLon = lon;
+      selectedName = name || `${lat.toFixed(3)}, ${lon.toFixed(3)}`;
+    }
+    if (date) els.date.value = date;
+
+    applyLangToDOM();
+    if (selectedName !== DEFAULT_NAME) els.place.value = selectedName;
+  }
+
+  initFromURL();
+  compute();
+
+})();
+</script>
+</body>
+</html>
