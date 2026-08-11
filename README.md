@@ -2,8 +2,7 @@
 
 A small field tool for the 2026 Perseid meteor shower: enter your location and get the best viewing window, the direction to look, and a live compass to point you there.
 
-**Live tool:** `https://<username>.github.io/perseid-radiant-2026/`
-*(replace with your actual GitHub Pages URL once Pages is enabled)*
+**Live tool:** `https://eceozen.github.io/perseid-tracker`
 
 ## What it does
 
